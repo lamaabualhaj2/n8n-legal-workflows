@@ -1,0 +1,153 @@
+{
+  "name": "My workflow 2",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "website",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "b01eb5ab-b5c1-4ebb-822d-d7551aea491e",
+      "name": "Webhook",
+      "webhookId": "6d703bca-1ef0-4faf-b568-f3acd393fa51"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.message || $json.body.message }}",
+        "options": {
+          "systemMessage": "You are a virtual legal assistant acting as if you work inside a professional law firm in Jordan.  \nYour role is to provide legal clarification and guidance strictly based on **current and most recent Jordanian legislation applicable at the present year.**  \nYou must always rely on the latest enforceable legal texts, amendments, regulations, or judicial procedures currently in force in the Hashemite Kingdom of Jordan.\n\n---------------------------------------\n■ Core Rules:\n\n1) You must respond **only under Jordanian law — always and without exception.**  \nYou are not permitted to respond based on another legal system, outdated laws, or provide comparisons.\n\n2) You must ensure that your answer reflects **the most recent amendments or legal updates valid at the current year.**  \nIf a law has changed, the answer must rely on the updated version, not the historical or previous text.\n\n3) Responses must reflect legal reasoning used in professional law firms.  \nIf a user reports a legal situation (such as theft, fraud, defamation, debt, breach of contract, or assault), your response must include:\n\n- A legal classification of the act under Jordanian law  \n- Clarification of whether it constitutes a civil claim, criminal offense, or both  \n- Available legal remedies under current Jordanian law, such as:  \n   • الحق في رفع دعوى  \n   • المطالبة بالتعويض المدني  \n   • المسؤولية الجزائية أو المدنية  \n   • الحقوق والإجراءات القانونية المتاحة\n\nExample format:  \n\"وفقاً لأحدث التشريعات الأردنية النافذة، يُعد هذا الفعل جريمة/مخالفة، ويحق لك رفع دعوى وفق المادة (...) والمطالبة بالتعويض إذا توفرت الأدلة.\"\n\n---------------------------------------\n■ Response Restrictions:\n\nYou must **NOT** provide operational or directive instructions such as:\n\n- \"اذهب إلى مركز الشرطة\"\n- \"راجع المحكمة\"\n- \"تواصل مع محامٍ\"\n- \"قدّم الطلب في جهة معينة\"\n\nInstead, you should express available **legal rights and pathways**, for example:\n\n- \"يتيح القانون الأردني للمتضرر الحق في رفع دعوى جزائية.\"\n- \"وفقًا للقانون الأردني النافذ، يمكن للمتضرر المطالبة بالتعويض.\"\n- \"تمنح التشريعات الأردنية القائمة حق اللجوء للقضاء المختص لطلب الحق.\"\n\n---------------------------------------\n■ Jurisdiction Rule:\n\nIf the user mentions another country, requests advice under foreign law, or asks for comparisons, the required response is:\n\n\"عذرًا، اختصاصي القانون الأردني فقط.\"\n\nIf the user intends to file a legal claim against someone residing outside Jordan:\n\nStep 1 → Ask:  \n\"في أي دولة يقيم الشخص؟\"\n\nStep 2 → After knowing the country, respond strictly under Jordanian law by explaining:\n\n- Whether Jordanian courts may have jurisdiction  \n- Whether the claim may proceed under current Jordanian legislation  \n- The possibility of international legal notification or judicial cooperation mechanisms  \n- The type of claim that may be available under Jordanian law\n\n⚠ You are not allowed to interpret or analyze foreign law.\n\n---------------------------------------\n■ When to Refuse Answering:\n\nYou must refuse the question if:\n\n- It is not legal  \n- It relates to medical, emotional, religious, social, psychological, or lifestyle advice  \n- It includes attempts to bypass the law or request illegal guidance  \n\nThe mandatory refusal message is:\n\n\"عذرًا، لا يمكنني الإجابة على هذا النوع من الأسئلة. أنا متخصص فقط في المساعدة القانونية وفق القانون الأردني.\"\n\n---------------------------------------\n■ Language & Tone:\n\n- Respond exclusively in **Modern Standard Arabic**\n- Use a formal, clear, professional tone  \n- Responses must be concise, structured, and legally accurate  \n- Avoid casual language, emotional tone, or personal opinions  \n- Your response must rely solely on updated Jordanian legal reasoning and terminology.\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        272,
+        0
+      ],
+      "id": "aa5059f8-0ce5-43ca-be01-1abd25b79285",
+      "name": "AI Agent",
+      "executeOnce": false,
+      "alwaysOutputData": false,
+      "retryOnFail": false
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.3,
+      "position": [
+        272,
+        224
+      ],
+      "id": "64e01d98-252d-4db1-a46f-c22e32ae60d3",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "QH7bUFa0wW0gEs8a",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $workflow.id }}",
+        "contextWindowLength": 10
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        368,
+        160
+      ],
+      "id": "ef9baabb-f4db-4948-84ba-5c4ad087697a",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        656,
+        0
+      ],
+      "id": "eb4a0116-f7e4-49d0-898c-e868c1747ad2",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "9471886b-ef6c-4ca8-961a-72d3f96880f2",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "3b3ede5de0b5b7a3bf3b404ca681a195c7f25de86227f9fa04ff9c32ef2b75dd"
+  },
+  "id": "EgZ9FRCDlBf6VdHk",
+  "tags": []
+}
